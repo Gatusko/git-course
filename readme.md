@@ -701,3 +701,34 @@ fatal: Need to specify how to reconcile divergent branches.
 ```
 Al hacer esto nos sale un error diciendo que tenemos que ver como reconciliar
 nuestros cambios de nosotros con el de nuestro companiero.
+
+Por defecto git va a tratar de ir siempre por el happy path de FF. 
+Pero en este escenario no sera posible por que estamos trabajando en la misma rama
+tenemos que decirle que nuestro pull tiene que ser sin FF
+
+
+Comando `git pull origin <branch-name> --no-ff`
+```
+mike@Mike-Laptop:~/personal/git-course$ git pull origin master --no-ff
+From github.com:Gatusko/git-course
+ * branch            master     -> FETCH_HEAD
+Auto-merging readme.md
+CONFLICT (content): Merge conflict in readme.md
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+Aqui ahora el error es un problema de merge que tenemos que solucionarlo
+
+Una ves solucioando veremos podremos ver el commit del merge
+
+```
+mike@Mike-Laptop:~/personal/git-course$ git log --oneline
+40af53e (HEAD -> master) Merge branch 'master' of github.com:Gatusko/git-course
+5037929 more changes
+5c8becc Git pull vs git push
+5cb5ef6 (origin/master) Conflico en remoto
+9c33dac Git pull example
+5013c1a Change user name to user personal email
+```
+
+Veremos mas adelante con rebase este ejemplo
