@@ -641,3 +641,23 @@ a la hora de obtener el trabajo de uno o del otro. Y puede existir que exista
 conflictos. Veremos dos Ejemplos
 
 Happy Path: Usuario actualiza la rama master y el no trabajo en esa rama.
+```
+$ git pull origin master
+remote: Enumerating objects: 5, done.
+remote: Counting objects: 100% (5/5), done.
+remote: Compressing objects: 100% (1/1), done.
+remote: Total 3 (delta 2), reused 3 (delta 2), pack-reused 0 (from 0)
+Unpacking objects: 100% (3/3), 927 bytes | 185.00 KiB/s, done.
+From github.com:Gatusko/git-course
+ * branch            master     -> FETCH_HEAD
+   5013c1a..9c33dac  master     -> origin/master
+Updating 5013c1a..9c33dac
+Fast-forward
+ readme.md | 42 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
+```
+Aqui vemos que hicimos un FF merge el happy path y lo que todo queremos. 
+
+Ejemplo 2: Los dos usuarios trabajan en la misma rama y los dos hacen 
+el cambio provocando un conflicto. 
+
