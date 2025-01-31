@@ -601,3 +601,43 @@ Receiving objects: 100% (45/45), 9.96 KiB | 1.42 MiB/s, done.
 Resolving deltas: 100% (29/29), done.
 ```
 En esto clonamos git-course caserito a nuestra carpeta principal.
+
+## git fetch
+Este comando es para que nuestro repositorio actual tenga los ultimos cambios.
+Git no hace nada automatico tenemos que hacerlo manualmente nosotros para 
+obtener los ulitmos cambios remotos a nuestro repositorio local
+
+Ejemplo:
+```
+mike@Mike-Laptop:~/personal/git-course$ git fetch
+remote: Enumerating objects: 4, done.
+remote: Counting objects: 100% (4/4), done.
+remote: Compressing objects: 100% (1/1), done.
+remote: Total 3 (delta 1), reused 3 (delta 1), pack-reused 0 (from 0)
+Unpacking objects: 100% (3/3), 253 bytes | 253.00 KiB/s, done.
+From github.com:Gatusko/git-course
+ * [new branch]      feature-4  -> origin/feature-4
+```
+Al hacer un git fetch hacemos que nuestro repositorio local tenga
+los ultimos cambios. 
+
+Es muy importante este comando veremos en errores comunes.
+
+
+## git pull
+Git pull es el comando para obtener los ultimos cambios a diferencia
+de git fetch esto aplica nuestros cambios haciendo un merge. En resumida
+git pull es dos comandos en uno:
+
+`git pull` = `git fetch` + `git merge` o `git rebase`
+
+Nostros cuando trabajamos en la rama siempre tenemos que hacer un git pull
+de esa rama. 
+
+Por que hace un `git merge` o un `git rebase`?
+
+Si n  personas trabajan en la misma rama tiene que existir una conciliacion 
+a la hora de obtener el trabajo de uno o del otro. Y puede existir que exista 
+conflictos. Veremos dos Ejemplos
+
+Happy Path: Usuario actualiza la rama master y el no trabajo en esa rama.
