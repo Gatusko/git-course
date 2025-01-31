@@ -661,3 +661,43 @@ Aqui vemos que hicimos un FF merge el happy path y lo que todo queremos.
 Ejemplo 2: Los dos usuarios trabajan en la misma rama y los dos hacen 
 el cambio provocando un conflicto. 
 
+```
+mike@Mike-Laptop:~/personal/git-course$ git push origin master
+To github.com:Gatusko/git-course.git
+ ! [rejected]        master -> master (fetch first)
+error: failed to push some refs to 'github.com:Gatusko/git-course.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+```
+Este es el primer error que nos sale ya que dos usuarios modificaron la rama 
+y hay un conflict. Nos esta pidiendo que hagamos un `git pull`
+
+```
+mike@Mike-Laptop:~/personal/git-course$ git pull origin master
+remote: Enumerating objects: 5, done.
+remote: Counting objects: 100% (5/5), done.
+remote: Compressing objects: 100% (1/1), done.
+remote: Total 3 (delta 2), reused 3 (delta 2), pack-reused 0 (from 0)
+Unpacking objects: 100% (3/3), 283 bytes | 283.00 KiB/s, done.
+From github.com:Gatusko/git-course
+ * branch            master     -> FETCH_HEAD
+   9c33dac..5cb5ef6  master     -> origin/master
+hint: You have divergent branches and need to specify how to reconcile them.
+hint: You can do so by running one of the following commands sometime before
+hint: your next pull:
+hint:
+hint:   git config pull.rebase false  # merge
+hint:   git config pull.rebase true   # rebase
+hint:   git config pull.ff only       # fast-forward only
+hint:
+hint: You can replace "git config" with "git config --global" to set a default
+hint: preference for all repositories. You can also pass --rebase, --no-rebase,
+hint: or --ff-only on the command line to override the configured default per
+hint: invocation.
+fatal: Need to specify how to reconcile divergent branches.
+```
+Al hacer esto nos sale un error diciendo que tenemos que ver como reconciliar
+nuestros cambios de nosotros con el de nuestro companiero.
