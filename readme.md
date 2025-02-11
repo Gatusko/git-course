@@ -787,4 +787,30 @@ mike@Mike-Laptop:~/personal/git-course$ git log --all --graph --decorate --oneli
 * 5013c1a Change user name to user personal email
 ```
 Aca vemos el commit c95c9b5 con este ID en la Rama despues del Rebase que pasara?
-2. Sobre la rama de master hacemos un `git rebase`
+2. Sobre la rama de master hacemos un `git rebase feature-rebase`  
+Primero nos dara el error: `fatal: invalid upstream 'feature-rebase'` Que significa que no tenemos los cambios
+localos entonces tenemois que tener los cambios en nuesra rama.  
+3. Tenemos que hacer un `git checkout feature-rebase` Para tener los cambios de nuestra rama en nuestro git local
+4. Y ahora si podemos hacer un `git rebase feature-rebase`
+```
+mike@Mike-Laptop:~/personal/git-course$ git rebase  feature-rebase
+Successfully rebased and updated refs/heads/master.
+```
+5. Que pasa con nuestro historial??
+```
+mike@Mike-Laptop:~/personal/git-course$ git log --all --graph --decorate --oneline --simplify-by-decoration
+* ecf14dd (HEAD -> master) add more changes
+* c95c9b5 (origin/feature-rebase, feature-rebase) new rebase
+* 13b049b (origin/master) Git pull final
+| * dd7dada (origin/feature-4) Test fetch
+|/
+* 5013c1a Change user name to user personal email
+```
+En este escenario no se cambio ya que no hubo ningun Conflicto este es el happy path. Que muestra en 
+todo los tutoriales de git y dicen que rebase es genial.
+
+# Git Rebase Con Conflictos
+Pero como dije antes no todo es color rosa con `rebase` vamos a ver que pasa
+con un merge conflict y dos usuarios que modifican el mismo archivo y que pasa?
+
+1. 
