@@ -813,4 +813,141 @@ todo los tutoriales de git y dicen que rebase es genial.
 Pero como dije antes no todo es color rosa con `rebase` vamos a ver que pasa
 con un merge conflict y dos usuarios que modifican el mismo archivo y que pasa?
 
-1. 
+1. Veremos que pasa si quieren hacer rebase de la rama principal y el usuario que esta en cargo de hacer el 
+merge decide hacerlo con rebase
+```
+mike@Mike-Laptop:~/personal/git-course$ git log --all --graph --decorate --oneline --simplify-by-decoration
+* c703723 (HEAD -> master, origin/master) conflict rebase
+| * a08ea2e (origin/rebase-error) rebase merge error
+|/
+* c95c9b5 (origin/feature-rebase, feature-rebase) new rebase
+| * dd7dada (origin/feature-4) Test fetch
+|/
+* 5013c1a Change user name to user personal email
+```
+Este es nuestro tree tenemos dos Ramas una rama rebase Error y el master. Los dos modicaron el archivo new.txt
+
+2. Trataremos de hacer el rebase
+```
+mike@Mike-Laptop:~/personal/git-course$ git rebase rebase-error
+Auto-merging new.txt
+CONFLICT (content): Merge conflict in new.txt
+error: could not apply c703723... conflict rebase
+hint: Resolve all conflicts manually, mark them as resolved with
+hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+hint: You can instead skip this commit: run "git rebase --skip".
+hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+Could not apply c703723... conflict rebase
+```
+Lo que no esta diciendo aca que tenemos un conflicto como cualquier merge con un `git status`
+
+```
+mike@Mike-Laptop:~/personal/git-course$ git status
+interactive rebase in progress; onto a08ea2e
+Last command done (1 command done):
+   pick c703723 conflict rebase
+No commands remaining.
+You are currently rebasing branch 'master' on 'a08ea2e'.
+  (fix conflicts and then run "git rebase --continue")
+  (use "git rebase --skip" to skip this patch)
+  (use "git rebase --abort" to check out the original branch)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   readme.md
+
+Unmerged paths:
+  (use "git restore --staged <file>..." to unstage)
+  (use "git add <file>..." to mark resolution)
+        both modified:   new.txt
+```
+Solucionamos los conflictios:
+```
+mike@Mike-Laptop:~/personal/git-course$ git add new.txt
+mike@Mike-Laptop:~/personal/git-course$ git rebase --continue
+[detached HEAD 7775b0d] conflict rebase
+ 2 files changed, 29 insertions(+), 1 deletion(-)
+Successfully rebased and updated refs/heads/master.
+mike@Mike-Laptop:~/personal/git-course$ git status
+On branch master
+nothing to commit, working tree clean
+```
+Pero aca tenemos el pitfall a la hora de Pushear a master:
+```
+mike@Mike-Laptop:~/personal/git-course$ git push origin master
+To github.com:Gatusko/git-course.git
+ ! [rejected]        master -> master (non-fast-forward)
+error: failed to push some refs to 'github.com:Gatusko/git-course.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. If you want to integrate the remote changes,
+hint: use 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+```
+El junio se queda pensando me pide un git pull??? 
+Al hacerlo tambien te sale un error:
+```
+mike@Mike-Laptop:~/personal/git-course$ git pull origin master
+From github.com:Gatusko/git-course
+ * branch            master     -> FETCH_HEAD
+hint: You have divergent branches and need to specify how to reconcile them.
+hint: You can do so by running one of the following commands sometime before
+hint: your next pull:
+hint:
+hint:   git config pull.rebase false  # merge
+hint:   git config pull.rebase true   # rebase
+hint:   git config pull.ff only       # fast-forward only
+hint:
+hint: You can replace "git config" with "git config --global" to set a default
+hint: preference for all repositories. You can also pass --rebase, --no-rebase,
+hint: or --ff-only on the command line to override the configured default per
+hint: invocation.
+fatal: Need to specify how to reconcile divergent branches.
+```
+Y entonces caemos en un bucle infinito. 
+Cual es la solucion???
+Ver nuestro historial y ver que todo cambio
+```
+mike@Mike-Laptop:~/personal/git-course$ git log --all --graph --decorate --oneline --simplify-by-decoration
+* 7775b0d (HEAD -> master) conflict rebase
+* a08ea2e (origin/rebase-error, rebase-error) rebase merge error
+| * e99eca9 (refs/stash) WIP on master: c703723 conflict rebase
+| * c703723 (origin/master) conflict rebase
+|/
+* c95c9b5 (origin/feature-rebase, feature-rebase) new rebase
+| * dd7dada (origin/feature-4) Test fetch
+|/
+* 5013c1a Change user name to user personal email
+```
+Los ids c703723 a08ea2e ya no existen en tu local a diferencial del origin 
+a la hora de hacerlo remotamente. Causando que recribiste la historia.
+Necesitas forcar el push
+```
+mike@Mike-Laptop:~/personal/git-course$ git push -f origin master
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 32 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (4/4), 944 bytes | 944.00 KiB/s, done.
+Total 4 (delta 1), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+To github.com:Gatusko/git-course.git
+ + c703723...7775b0d master -> master (forced update)
+```
+Y la historia de tu git tendria diferentes ids:
+```
+mike@Mike-Laptop:~/personal/git-course$ git log --all --graph --decorate --oneline --simplify-by-decoration
+* 7775b0d (HEAD -> master, origin/master) conflict rebase
+* a08ea2e (origin/rebase-error, rebase-error) rebase merge error
+* c95c9b5 (origin/feature-rebase, feature-rebase) new rebase
+| * dd7dada (origin/feature-4) Test fetch
+|/
+* 5013c1a Change user name to user personal email
+```
+Dios hasta se puede modicar hasta el codigo de los commits no solo los conflictos.
+
+Todo por tenerlo `clean tree`
+
+# Por ultimo Pull Request!!
+Siempre que trabajen en equipos es necesario hacer Pull Requests!
+Haci la rama principal de git va a tener reviewers y demas! Esto
+lo veremos en vivo y en directo como hacerlo. 
