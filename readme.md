@@ -732,3 +732,59 @@ mike@Mike-Laptop:~/personal/git-course$ git log --oneline
 ```
 
 Veremos mas adelante con rebase este ejemplo
+
+# Rebase
+Bonito en teoria odiado en Practica. Es modificar nuestra historial de 
+commit. Se puede "Mergear" Pero en realidad lo que hacemos es modificar
+es historial de git. 
+
+Hay muchos que dicen "Ni timas a rebase" En realidad si hacaces un rebase
+local no deberia afectar. Sin embargo un Rebase remoto afecta y jode. 
+
+De github(https://docs.github.com/en/get-started/using-git/about-git-rebase):
+
+```
+Warning
+
+Because changing your commit history can make things difficult
+ for everyone else using the repository, it's considered bad 
+ practice to rebase commits when you've already pushed to a repository. 
+ To learn how to safely rebase, see About pull request merges.
+```
+
+De BitBucket(https://www.atlassian.com/git/tutorials/rewriting-history/git-rebase)
+```
+Don't rebase public history
+As we've discussed previously in rewriting history, 
+you should never rebase commits once they've been pushed to a public repository.
+The rebase would replace the old commits with new ones and it would look like that part of your project history abruptly vanished.
+```
+
+Y de muchos sources mas podriamos sacar esa informacion.
+
+"Piro mi sinior mi dijo qui ribise es bueno" NOOO!! REBASE HACE QUE EXISTA LA POSIBILIDAD QUE SE PIERDA
+LA HISTORIA YA QUE MODIFICAMOS LA HISTORIA!
+
+Por mas que queramos tener un git tree sin commits y demas y perfecciontistas prefieran usar rebase.
+El rebase causo muchos conflictos, es por eso que se sigue usando merge hasta el dia de hoy. 
+
+Sin embargo daremos unos ejemplos de rebase.
+
+# Git Merge con Rebase
+
+En este escenario en ves de `merge` nuestra rama `feature-rebase` vamos a
+hacer un `rebase`
+Pasos:
+1. Vamos a suponer que nuestra rama `feature-rebase` ya fue pusheada a nuestro
+repositorio entonces vamos a tener que ir hacer un `git fetch`
+```
+mike@Mike-Laptop:~/personal/git-course$ git fetch
+mike@Mike-Laptop:~/personal/git-course$ git log --all --graph --decorate --oneline --simplify-by-decoration
+* c95c9b5 (origin/feature-rebase) new rebase
+* 13b049b (HEAD -> master, origin/master) Git pull final
+| * dd7dada (origin/feature-4) Test fetch
+|/
+* 5013c1a Change user name to user personal email
+```
+Aca vemos el commit c95c9b5 con este ID en la Rama despues del Rebase que pasara?
+2. Sobre la rama de master hacemos un `git rebase`
