@@ -2,3 +2,4 @@ test-my-error
 test 1w
 test 2
 test 3
+test 4
